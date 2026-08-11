@@ -1,32 +1,53 @@
-# React + TypeScript + Vite
+## 📄 2. README para el Front-End (`ecommerce-frontend-react/README.md`)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+```markdown
+# 🛒 E-Commerce Web App - React, TypeScript & Tailwind CSS
 
-Currently, two official plugins are available:
+Interfaz de usuario moderna e interactiva para un comercio electrónico en tiempo real. Se conecta con una API RESTful construida en FastAPI para manejar autenticación JWT, creación de productos y gestión del carrito de compras.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![React](https://img.shields.io/badge/React-18+-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-6.0+-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-HTTP-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Características Principales
 
-## Expanding the Oxlint configuration
+* 🎨 **Diseño Moderno & Oscuro:** Construido con **Tailwind CSS v4** y componentes totalmente adaptables (Responsive).
+* 🛒 **Catálogo de Productos Dinámico:** Consumo en tiempo real del API Back-End (`GET /products`).
+* ➕ **Creación de Productos:** Formulario interactivo para publicar productos directamente a la base de datos (`POST /products`).
+* 🔐 **Modal de Autenticación JWT:** Inicio de sesión que consume OAuth2 (`POST /auth/login`), gestiona tokens en el `localStorage` y mantiene el estado global.
+* 🛍️ **Carrito de Compras:** Contador dinámico interactivo en el header.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+---
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+## 🛠️ Tecnologías Utilizadas
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+* **Biblioteca UI:** React.js
+* **Lenguaje:** TypeScript
+* **Herramienta de Construcción:** Vite
+* **Estilos:** Tailwind CSS v4 + PostCSS
+* **Cliente HTTP:** Axios
+
+---
+
+## ⚙️ Instalación y Ejecución Local
+
+### 1. Clonar el repositorio
+```bash
+git clone [https://github.com/jairo-maldonado/ecommerce-frontend-react.git](https://github.com/jairo-maldonado/ecommerce-frontend-react.git)
+cd ecommerce-frontend-react
+
+2. Instalar dependencias
+npm install
+
+3. Iniciar el servidor de desarrollo
+npm run dev
+
+👤 Autor
+
+Jairo Maldonado - Desarrollador Full-Stack Junior 
+LinkedIn: Jairo Maldonado 
+GitHub: @jairo-maldonado

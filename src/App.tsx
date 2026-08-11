@@ -15,12 +15,18 @@ function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const [cartCount, setCartCount] = useState<number>(0);
 
-  // Estado para el formulario de nuevo producto
+  // Estados del Formulario de Productos
   const [showForm, setShowForm] = useState<boolean>(false);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
+
+  // Estados de Autenticación / Login
+  const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
 
   const fetchProducts = async () => {
     try {
@@ -37,13 +43,13 @@ function App() {
     fetchProducts();
   }, []);
 
-  // Función para agregar al carrito
+  // Agregar al Carrito
   const handleAddToCart = (productName: string) => {
     setCartCount(prev => prev + 1);
     alert(`🛒 ¡${productName} agregado al carrito!`);
   };
 
-  // Función para guardar producto en la API (Back-End)
+  // Crear Producto en la API
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -53,17 +59,49 @@ function App() {
         price: parseFloat(price),
         stock: parseInt(stock, 10)
       });
-      alert('✅ ¡Producto creado con éxito!');
+      alert('✅ ¡Producto guardado en la Base de Datos!');
       setName('');
       setDescription('');
       setPrice('');
       setStock('');
       setShowForm(false);
-      fetchProducts(); // Recargar la lista de la BD
+      fetchProducts();
     } catch (error) {
       console.error('Error al crear producto:', error);
-      alert('❌ Error al guardar el producto. Revisa la consola.');
+      alert('❌ Error al guardar el producto.');
     }
+  };
+
+  // Iniciar Sesión (Autenticación JWT)
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append('username', email);
+      formData.append('password', password);
+
+      const response = await api.post('/auth/login', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      const accessToken = response.data.access_token;
+      localStorage.setItem('token', accessToken);
+      setToken(accessToken);
+      setShowLoginModal(false);
+      setEmail('');
+      setPassword('');
+      alert('🎉 ¡Sesión iniciada con éxito! Token JWT guardado.');
+    } catch (error) {
+      console.error('Error en login:', error);
+      alert('❌ Credenciales incorrectas. Intenta de nuevo.');
+    }
+  };
+
+  // Cerrar Sesión
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setToken(null);
+    alert('Sesión cerrada.');
   };
 
   return (
@@ -71,21 +109,78 @@ function App() {
       {/* Header */}
       <header className="max-w-6xl mx-auto flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
         <h1 className="text-3xl font-bold text-blue-500">🛒 E-Commerce Store</h1>
+        
         <div className="flex items-center gap-4">
           <div className="bg-gray-800 px-4 py-2 rounded-lg border border-gray-700 font-semibold text-sm">
             🛒 Carrito: <span className="text-green-400 font-bold">{cartCount}</span>
           </div>
+
           <button 
             onClick={() => setShowForm(!showForm)}
             className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-semibold transition"
           >
             {showForm ? 'Cerrar Formulario' : '+ Nuevo Producto'}
           </button>
+
+          {token ? (
+            <button 
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-semibold transition"
+            >
+              Cerrar Sesión
+            </button>
+          ) : (
+            <button 
+              onClick={() => setShowLoginModal(true)}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-semibold transition"
+            >
+              Iniciar Sesión
+            </button>
+          )}
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto">
-        {/* Formulario de Creación */}
+        {/* Modal de Login */}
+        {showLoginModal && (
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+            <div className="bg-gray-800 border border-gray-700 p-6 rounded-xl w-full max-w-sm shadow-2xl relative">
+              <h3 className="text-xl font-bold mb-4 text-blue-400">Iniciar Sesión</h3>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <input 
+                  type="email" 
+                  placeholder="Correo electrónico" 
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)} 
+                  required 
+                  className="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white focus:outline-none focus:border-blue-500"
+                />
+                <input 
+                  type="password" 
+                  placeholder="Contraseña" 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)} 
+                  required 
+                  className="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white focus:outline-none focus:border-blue-500"
+                />
+                <div className="flex gap-2">
+                  <button type="submit" className="w-full py-2 bg-blue-600 hover:bg-blue-700 font-bold rounded-lg transition">
+                    Ingresar
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => setShowLoginModal(false)}
+                    className="w-full py-2 bg-gray-700 hover:bg-gray-600 font-bold rounded-lg transition"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Formulario de Producto */}
         {showForm && (
           <form onSubmit={handleCreateProduct} className="bg-gray-800 border border-gray-700 p-6 rounded-xl mb-8 max-w-md mx-auto shadow-2xl">
             <h3 className="text-xl font-bold mb-4 text-blue-400">Publicar Producto en Base de Datos</h3>
@@ -130,7 +225,7 @@ function App() {
           </form>
         )}
 
-        {/* Listado de Productos */}
+        {/* Lista de Productos */}
         <h2 className="text-xl font-semibold mb-6 text-gray-300">Catálogo de Productos</h2>
 
         {loading ? (
